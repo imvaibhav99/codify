@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# shadcn ui
+/components.json
+
+# Tailwind build cache
+/.turbo
+/.tailwindcache
+/lib/generated/prisma

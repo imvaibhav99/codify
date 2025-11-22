@@ -12,9 +12,15 @@ model User{
 prisma then-> npx prisma generate -> npx prisma db push.   Prisma connected to the MongoDb and created a user collection
 
 # authentication using auth.js using docs of auth.js with prisma adapter
-->pm install next-auth@beta
+->npm install next-auth@beta
 -> npx auth secret // it created the env.local with a secret code-> copy into .env and delete the env.local
 ->create auth.ts in root directory and copy from docs,then create folders->app->api->[...nextauth]-> route.ts and paste from docs.
 -> npm i @auth/prisma-adapter and follow the docs
 
 -> then create auth.config.ts and write the code of google and github auth and add the .env
+
+->in schema.prisma - add the user model and account model referencing from the auth.js file
+
+# npx prisma generate -> npx prisma db push
+->create routes.ts and write for private and protected and the auth routes, then create a middleware.ts file in the root-> write the middlewares
+

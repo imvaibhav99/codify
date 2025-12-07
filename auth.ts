@@ -2,6 +2,8 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "./auth.config";
 import { db } from "@/lib/db";
+import { getUserById } from "@/modules/auth/actions";
+
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
@@ -17,7 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           data: {
             email: user.email!,
             name: user.name,
-            image: user.image,
+            image: user.image ?? null,
             accounts: {
               create: {
                 type: account.type,
@@ -68,9 +70,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true;
     },
 
-    async jwt() {},
+    async jwt({token}) {
+      if(!token.sub) return token;
+      const exisitngUser= await getUserById(token.sub);
+      if(!exisitngUser) return token;
+      token.name= exisitngUser.name;
+      token.email= exisitngUser.email;
+      token.role= exisitngUser.role;
 
-    async session() {},
+      return token;
+    },
+
+    async session({session, token}) {
+      if(token.sub && session.user){
+        session.user.id= token.sub;
+      }
+      if(token.role && session.user){
+        session.user.role= token.role;
+      }
+      return session;
+    },
   },
 
   secret: process.env.AUTH_SECRET,
